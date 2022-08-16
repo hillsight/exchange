@@ -10,17 +10,9 @@ import { binance, ... } from "https://deno.land/x/hillsight/exchange/mod.ts";
 ## Usage
 
 ```ts
-registerExchange("binance", binance);
-
-const exchange = createExchange({
-  provider: "binance",
-  credentials: {
-    api_key: "...",
-    secret_key: "...",
-  },
-  options: {
-    // ...
-  },
+const exchange = binance({
+  api_key: "...",
+  secret_key: "...",
 })
 ```
 
