@@ -10,7 +10,8 @@ A Exchange Provider is a service in Hillsight that provides capabilities to mana
 
 ## API
 - `balance()`: Get the balance of an account.
-- `order({ symbol, side, price, quantity })`: Place a order on the exchange.
+- `order( symbol, side, price, quantity )`: Place a order on the exchange.
+- `cancel( order_id )`: Cancel an order.
 - `stream( [symbol, interval]... )`: Stream klines for a symbol and interval.
 - `history( symbol, interval, start, end )`: Get historical data for a symbol and interval.
 - `symbols()`: Get a list of all available symbols.
