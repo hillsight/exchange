@@ -48,7 +48,11 @@ To implement an Exchange Provider, you should export the default value of `creat
 
 ```ts
 // Example of a dummy provider (async-ish)
-export default createProvider({
+type Options = {
+  cache_dir: string;
+}
+
+export default createProvider<Options>((options) => {
   async balance() {
     return Promise.resolve({
       USD: {
