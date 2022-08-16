@@ -16,6 +16,8 @@ const exchange = binance({
 })
 ```
 
+Read more about the [Provider API](./PROVIDER.md).
+
 ## Supported Exchanges
 
 - [ ] [Binance](https://www.binance.com/)
