@@ -75,6 +75,9 @@ export default createProvider<Options>((options) => {
       quantity,
     });
   },
+  async cancel({ order_id }) {
+    return Promise.resolve(true);
+  },
   async *stream(symbol, interval) {
     yield Promise.resolve([1546300800, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
     yield Promise.resolve([1546300900, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
