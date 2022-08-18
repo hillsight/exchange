@@ -1,26 +1,34 @@
 # Exchange Provider Documentation
 
 ## Introduction
-A Exchange Provider is a service in Hillsight that provides capabilities to manage orders and collect data from an exchange.
+
+A Exchange Provider is a service in Hillsight that provides capabilities to
+manage orders and collect data from an exchange.
 
 ### Features
+
 - A provider should be able to read the balance of an user.
 - A provider should be able to place orders on behalf of a user.
-- A provider should be able to read market data in real time as well as historical data.
+- A provider should be able to read market data in real time as well as
+  historical data.
 
 ## API
+
 - `balance()`: Get the balance of an account.
 - `order_limit( symbol, side, quantity, price )`: Place a limit order.
 - `order_market( symbol, side, quantity, [quota] )`: Place a market order.
 - `cancel( symbol, order_id )`: Cancel an order.
 - `symbols()`: Get a list of all available symbols.
-- `time()`: Get the current time on the exchange. *(Used for time synchronization)*
+- `time()`: Get the current time on the exchange. _(Used for time
+  synchronization)_
 - `stream( [symbol, interval]... )`: Stream klines for a symbol and interval.
-- `history( symbol, interval, start, end )`: Get historical data for a symbol and interval.
+- `history( symbol, interval, start, end )`: Get historical data for a symbol
+  and interval.
 
 ## Kline
 
 ### Structure
+
 - `time`: The unix timestamp of the kline.
 - `open`: The open price of the kline.
 - `high`: The highest price of the kline.
@@ -29,7 +37,9 @@ A Exchange Provider is a service in Hillsight that provides capabilities to mana
 - `volume`: The volume of the kline.
 
 ### Intervals
+
 The following intervals are required to be supported:
+
 - `1m`: 1 minute
 - `5m`: 5 minute
 - `15m`: 15 minute
@@ -46,7 +56,9 @@ The following intervals are required to be supported:
 - `1mo`: 1 month
 
 ## Implementation
-To implement an Exchange Provider, you should export the default value of `createProvider` function from the `provider.ts` file.
+
+To implement an Exchange Provider, you should export the default value of
+`createProvider` function from the `provider.ts` file.
 
 ```ts
 // Example of a dummy provider (async-ish)
@@ -55,60 +67,42 @@ type Options = {
 }
 
 export default createProvider<Options>((options) => {
-  async balance() {
+  name: "MyProvider",
+
+  balance() {
     return Promise.resolve({
-      USD: {
-        available: 100,
-        onOrder: 0,
-      },
-      BTC: {
-        available: 0,
-        onOrder: 0,
-      },
+      USD: 1000,
+      BTC: 20,
     });
   },
-  async order_limit(symbol, side, quantity, price) {
-    return Promise.resolve({
-      id: '123',
-      symbol,
-      side,
-      price,
-      quantity,
-    });
+  order_limit(symbol, side, quantity, price) {
+    return Promise.resolve("123")
   },
-  async order_market(symbol, side, quantity, quota) {
-    return Promise.resolve({
-      id: '123',
-      symbol,
-      side,
-      quantity,
-      quota,
-    });
-  }
-  async cancel(symbol, order_id ) {
-    return Promise.resolve(true);
+  order_market(symbol, side, quantity, quota) {
+    return Promise.resolve("123")
   },
-  async symbols() {
+  cancel(symbol, order_id) {
+    return Promise.resolve(true)
+  },
+  symbols() {
     return Promise.resolve([
       ['BTC', 'USDT'],
       ['ETH', 'USDT'],
       ['LTC', 'USDT'],
     ]);
   },
-  async time() {
+  time() {
     return Promise.resolve(1546300800);
   },
-  async *stream(symbol, interval) {
-    yield Promise.resolve([1546300800, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
-    yield Promise.resolve([1546300900, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
-    yield Promise.resolve([1546301000, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
+  async *stream(symbols) {
+    yield [['', ''] as Symbol, [1546300800, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100] as Kline];
   },
-  async history(symbol, interval, start, end) {
+  history(symbol, interval, start, end) {
     return Promise.resolve([
       [1546300800, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100],
       [1546300900, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100],
       [1546301000, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100],
     ]);
-  },
+  }
 });
 ```
