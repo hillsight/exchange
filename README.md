@@ -20,7 +20,7 @@ Read more about the [Provider API](./PROVIDER.md).
 
 ## Supported Exchanges
 
-- [ ] [Binance](https://www.binance.com/)
+- [x] [Binance](https://www.binance.com/)
 - [ ] [Kucoin](https://www.kucoin.com/)
 - [ ] [Coinbase](https://www.coinbase.com/)
 - [ ] [Kraken](https://www.kraken.com/)
