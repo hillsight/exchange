@@ -5,7 +5,7 @@ export type WebSocketOptions = {
 export type WebSocketIterator<T> = WebSocket & AsyncGenerator<MessageEvent<T>, void, void>;
 
 // deno-lint-ignore no-explicit-any
-export function connectSocket<T = any>(url: string | URL, protocols?: string | string[]) {
+export function connect<T = any>(url: string | URL, protocols?: string | string[]) {
   const source = new WebSocket(url, protocols) as WebSocketIterator<T>;
 
   source[Symbol.asyncIterator] = function () {

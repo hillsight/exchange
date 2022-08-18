@@ -5,10 +5,10 @@ import {
   existsSync,
 } from "https://deno.land/std@0.149.0/fs/mod.ts";
 
-import { ACCEPTABLE_INTERVALS, createProvider, DEFAULT_CACHE_DIR, Interval } from "./provider.ts";
-import type { Symbol, Credentials, Kline } from "./provider.ts";
+import { createProvider, DEFAULT_CACHE_DIR, ACCEPTABLE_INTERVALS } from "./provider.ts";
+import type { Symbol, Credentials, Kline, Interval } from "./provider.ts";
 
-import { connectSocket } from "../utils/websocket.ts";
+import { connect } from "../utils/websocket.ts";
 import { download } from "../utils/download.ts";
 
 export type Options = {
@@ -165,7 +165,7 @@ export default createProvider<Options>(({ api_key, secret_key, cache_dir = DEFAU
 
     let retries = 0;
     while (retries++ < 3) {
-      const socket = connectSocket(`wss://stream.binance.com:9443/stream?streams=${streams.join("/").toLowerCase()}`);
+      const socket = connect(`wss://stream.binance.com:9443/stream?streams=${streams.join("/").toLowerCase()}`);
 
       for await (const event of socket) {
         if (event.data === "PING") {
