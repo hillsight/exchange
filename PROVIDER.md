@@ -10,7 +10,8 @@ A Exchange Provider is a service in Hillsight that provides capabilities to mana
 
 ## API
 - `balance()`: Get the balance of an account.
-- `order( symbol, side, quantity, price, quote )`: Place a order on the exchange.
+- `order_limit( symbol, side, quantity, price )`: Place a limit order.
+- `order_market( symbol, side, quantity, [quota] )`: Place a market order.
 - `cancel( symbol, order_id )`: Cancel an order.
 - `symbols()`: Get a list of all available symbols.
 - `time()`: Get the current time on the exchange. *(Used for time synchronization)*
@@ -66,7 +67,7 @@ export default createProvider<Options>((options) => {
       },
     });
   },
-  async order(symbol, side, quantity, price, quote) {
+  async order_limit(symbol, side, quantity, price) {
     return Promise.resolve({
       id: '123',
       symbol,
@@ -75,6 +76,15 @@ export default createProvider<Options>((options) => {
       quantity,
     });
   },
+  async order_market(symbol, side, quantity, quota) {
+    return Promise.resolve({
+      id: '123',
+      symbol,
+      side,
+      quantity,
+      quota,
+    });
+  }
   async cancel(symbol, order_id ) {
     return Promise.resolve(true);
   },
