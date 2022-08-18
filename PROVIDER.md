@@ -10,12 +10,12 @@ A Exchange Provider is a service in Hillsight that provides capabilities to mana
 
 ## API
 - `balance()`: Get the balance of an account.
-- `order( symbol, side, price, quantity )`: Place a order on the exchange.
-- `cancel( order_id )`: Cancel an order.
-- `stream( [symbol, interval]... )`: Stream klines for a symbol and interval.
-- `history( symbol, interval, start, end )`: Get historical data for a symbol and interval.
+- `order( symbol, side, quantity, price, quote )`: Place a order on the exchange.
+- `cancel( symbol, order_id )`: Cancel an order.
 - `symbols()`: Get a list of all available symbols.
 - `time()`: Get the current time on the exchange. *(Used for time synchronization)*
+- `stream( [symbol, interval]... )`: Stream klines for a symbol and interval.
+- `history( symbol, interval, start, end )`: Get historical data for a symbol and interval.
 
 ## Kline
 
@@ -66,7 +66,7 @@ export default createProvider<Options>((options) => {
       },
     });
   },
-  async order({ symbol, side, price, quantity }) {
+  async order(symbol, side, quantity, price, quote) {
     return Promise.resolve({
       id: '123',
       symbol,
@@ -75,8 +75,18 @@ export default createProvider<Options>((options) => {
       quantity,
     });
   },
-  async cancel({ order_id }) {
+  async cancel(symbol, order_id ) {
     return Promise.resolve(true);
+  },
+  async symbols() {
+    return Promise.resolve([
+      ['BTC', 'USDT'],
+      ['ETH', 'USDT'],
+      ['LTC', 'USDT'],
+    ]);
+  },
+  async time() {
+    return Promise.resolve(1546300800);
   },
   async *stream(symbol, interval) {
     yield Promise.resolve([1546300800, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100]);
@@ -89,16 +99,6 @@ export default createProvider<Options>((options) => {
       [1546300900, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100],
       [1546301000, 0.00000100, 0.00000100, 0.00000100, 0.00000100, 0.00000100],
     ]);
-  },
-  async symbols() {
-    return Promise.resolve([
-      ['BTC', 'USDT'],
-      ['ETH', 'USDT'],
-      ['LTC', 'USDT'],
-    ]);
-  },
-  async time() {
-    return Promise.resolve(1546300800);
   },
 });
 ```

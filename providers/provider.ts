@@ -1,3 +1,5 @@
+import { resolve } from "https://deno.land/std@0.149.0/path/mod.ts";
+
 /**
  * Representation of the account balance.
  * A object with symbols as keys and balance as value.
@@ -9,7 +11,7 @@ export type Balance = {
 /**
  * Required supported intervals for the provider.
  */
-export type Interval = '1m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w' | '1mo';
+export type Interval = '1m' | '5m' | '15m' | '30m' | '1h' | '2h' | '4h' | '6h' | '8h' | '12h' | '1d' | '3d' | '1w';
 
 /**
  * Representation of a kline.
@@ -32,38 +34,6 @@ export type Provider = {
   balance(): Promise<Balance>;
 
   /**
-   * Place a order on the exchange.
-   * @param symbol The symbol to trade.
-   * @param side The side of the order. (buy or sell)
-   * @param price The price of the order.
-   * @param quantity The quantity of the order.
-   */
-  order(symbol: Symbol, side: 'buy' | 'sell', price: number, quantity: number): Promise<string>;
-  /**
-   * Cancel an order on the exchange.
-   * @param id The id of the order to cancel.
-   */
-  cancel(id: string): Promise<void>;
-
-  /**
-   * Stream klines for multiple symbols and intervals.
-   * @param symbols The symbols to stream.
-   */
-  stream(symbols: {
-    symbol: Symbol;
-    interval: Interval;
-  }[]): Promise<Kline>;
-
-  /**
-   * Get historical data for a symbol and interval.
-   * @param symbol The symbol to get historical data for.
-   * @param interval The interval to get historical data for.
-   * @param start The start time of the historical data.
-   * @param end The end time of the historical data.
-   */
-  history(symbol: Symbol, interval: Interval, start: number, end: number): Promise<Kline[]>;
-
-  /**
    * Get a list of all available symbols.
    */
   symbols(): Promise<Symbol[]>;
@@ -74,14 +44,57 @@ export type Provider = {
    * @throws An error if the time cannot be retrieved.
    */
   time(): Promise<number>;
+
+  /**
+   * Place a limit order on the exchange.
+   * @param symbol The symbol to trade.
+   * @param side The side of the order. (buy or sell)
+   * @param price The price of the order.
+   * @param quantity The quantity of the order.
+   */
+  order_limit(symbol: Symbol, side: 'buy' | 'sell', quantity: number, price: number): Promise<string>;
+
+  /**
+   * Place a market order on the exchange.
+   * @param symbol The symbol to trade.
+   * @param side The side of the order. (buy or sell)
+   * @param quantity The quantity of the order. (optional)
+   * @param quote The amount of quote currency to spend. (optional)
+   */
+  order_market(symbol: Symbol, side: 'buy' | 'sell', quantity?: number, quote?: number): Promise<string>;
+
+  /**
+   * Cancel an order on the exchange.
+   * @param symbol The symbol to trade.
+   * @param id The id of the order to cancel.
+   */
+  cancel(symbol: Symbol, id: string): Promise<boolean>;
+
+  /**
+   * Stream klines for multiple symbols and intervals.
+   * @param symbols The symbols to stream.
+   */
+  stream(symbols: {
+    symbol: Symbol;
+    interval: Interval;
+  }[]): AsyncGenerator<[Symbol, Kline], void, unknown>
+
+  /**
+   * Get historical data for a symbol and interval.
+   * @param symbol The symbol to get historical data for.
+   * @param interval The interval to get historical data for.
+   * @param start The start time of the historical data.
+   * @param end The end time of the historical data.
+   */
+  history(symbol: Symbol, interval: Interval, start: Date, end?: Date): Promise<Kline[]>;
 }
 
 /**
  * The credentials to use to authenticate with the exchange.
  */
 export type Credentials = {
-  api_key: string;
-  secret_key: string;
+  api_key?: string;
+  secret_key?: string;
 }
 
 /**
@@ -111,3 +124,6 @@ export function createProvider<T extends Record<string, unknown>>(provider: Prov
   }
   return () => provider;
 }
+
+export const DEFAULT_CACHE_DIR = resolve(Deno.cwd(), '.cache');
+export const ACCEPTABLE_INTERVALS = ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w'];
