@@ -65,7 +65,7 @@ function __unsafePublicCall(path: string, params: Record<string, unknown> = {}, 
   return fetch(url, options);
 }
 
-export default createProvider<Options>(({ api_key, secret_key, cache_dir = DEFAULT_CACHE_DIR, ...options }) => ({
+export default createProvider<Options>(({ api_key, secret_key, cache_dir = DEFAULT_CACHE_DIR }) => ({
   name: "Binance",
 
   async balance() {
